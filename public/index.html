@@ -8,258 +8,665 @@
 <meta property="og:title" content="ConnectAnytime">
 <meta property="og:description" content="The NYU Shanghai VPN, one tap away. For Mac, iPhone and Android.">
 <meta property="og:image" content="/apple-touch-icon.png">
-<meta name="theme-color" content="#57068C">
+<meta name="theme-color" content="#FBFAFD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0A15" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ---------- Tokens ---------- */
 :root{
-  --ink:#24063F;        /* deep violet ink */
-  --violet:#57068C;     /* NYU violet, from the app icon */
-  --violet-hi:#7B2CBF;
-  --lilac:#EFE6F8;
-  --paper:#FCFAFE;
-  --mist:#75648A;
-  --signal:#2BD67B;     /* only ever means "connected" */
-  --rule:#E3D8EF;
-  --r-lg:28px; --r-sm:10px;
+  color-scheme:light dark;
+  --bg:#FBFAFD; --raised:#FFFFFF; --sunk:#F6F3FA;
+  --ink:#1A0F26; --muted:#655A73; --line:#E7E1EE; --line-2:#D8CFE3;
+  --violet:#57068C; --violet-hover:#6A12A8; --on-violet:#FFFFFF;
+  --accent:#57068C;                    /* violet used as text */
+  --tint:rgba(87,6,140,.055); --tint-2:rgba(87,6,140,.10);
+  --focus:#7C3AED;
+  --signal:#2BD67B; --signal-ink:#053D1F; /* green only ever means connected */
+  --signal-ring:rgba(43,214,123,.14); --signal-glow:rgba(43,214,123,.38);
+  --glow:rgba(124,58,237,.10);
+  --shadow-card:0 1px 2px rgba(26,15,38,.04);
+  --shadow-panel:0 1px 1px rgba(26,15,38,.03),0 10px 24px -12px rgba(26,15,38,.12),0 36px 72px -32px rgba(70,12,120,.22);
+  --shadow-btn:inset 0 1px 0 rgba(255,255,255,.14),0 1px 2px rgba(26,15,38,.18);
+  --sans:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){--paper:#140524;--ink:#F3ECFA;--mist:#A995C0;--rule:#2E1747;--lilac:#22103A}
+  :root:not([data-theme="light"]){
+    --bg:#0F0A15; --raised:#18111F; --sunk:#130D1A;
+    --ink:#F2EDF7; --muted:#A79DB5; --line:#2A2033; --line-2:#3A2E46;
+    --violet:#8B3FD9; --violet-hover:#9447E0; --accent:#C9A7F5;
+    --tint:rgba(155,93,229,.10); --tint-2:rgba(155,93,229,.18);
+    --focus:#B98AF5; --glow:rgba(139,63,217,.14);
+    --shadow-card:none;
+    --shadow-panel:inset 0 1px 0 rgba(255,255,255,.04),0 30px 60px -30px rgba(0,0,0,.6);
+    --shadow-btn:inset 0 1px 0 rgba(255,255,255,.16);
+  }
 }
-:root[data-theme="dark"]{--paper:#140524;--ink:#F3ECFA;--mist:#A995C0;--rule:#2E1747;--lilac:#22103A}
-*{box-sizing:border-box;margin:0}
-body{font-family:"Schibsted Grotesk",system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+:root[data-theme="dark"]{
+  --bg:#0F0A15; --raised:#18111F; --sunk:#130D1A;
+  --ink:#F2EDF7; --muted:#A79DB5; --line:#2A2033; --line-2:#3A2E46;
+  --violet:#8B3FD9; --violet-hover:#9447E0; --accent:#C9A7F5;
+  --tint:rgba(155,93,229,.10); --tint-2:rgba(155,93,229,.18);
+  --focus:#B98AF5; --glow:rgba(139,63,217,.14);
+  --shadow-card:none;
+  --shadow-panel:inset 0 1px 0 rgba(255,255,255,.04),0 30px 60px -30px rgba(0,0,0,.6);
+  --shadow-btn:inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:16.5px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 a{color:inherit}
-:focus-visible{outline:3px solid var(--signal);outline-offset:3px;border-radius:6px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+img,svg{display:block}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:8px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{max-width:1184px;margin:0 auto;padding:0 32px}
+.ico{width:18px;height:18px;flex:none}
 
-/* ---------- HERO ---------- */
-.hero{background:radial-gradient(120% 90% at 85% 10%,#7A1FC2 0%,var(--violet) 38%,#2E0352 100%);color:#fff;overflow:hidden}
-nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
-.brand{display:flex;gap:10px;align-items:center;font-weight:700;font-size:18px;text-decoration:none}
-.brand svg{width:30px;height:30px}
-nav .gh{font-weight:500;font-size:15px;opacity:.85;text-decoration:none}
-nav .gh:hover{opacity:1}
-.hero-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:48px;align-items:center;padding:56px 0 96px}
-h1{font-size:clamp(44px,6.4vw,84px);line-height:.98;letter-spacing:-.035em;font-weight:800}
-.lede{margin-top:22px;font-size:20px;max-width:30ch;color:#E6D6F7}
+/* ---------- Nav ---------- */
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px;letter-spacing:-.01em;text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:7px}
+.nav-link{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:500;color:var(--muted);text-decoration:none;padding:6px 10px;margin-right:-10px;border-radius:8px;transition:color .15s,background-color .15s}
+.nav-link:hover{color:var(--ink);background:var(--tint)}
+.nav-link .ico{width:17px;height:17px}
 
-/* the ritual: Cisco's steps, crossed out on load */
-.ritual{list-style:none;padding:0;margin-top:40px;display:flex;flex-wrap:wrap;gap:10px}
-.ritual li{position:relative;padding:8px 14px;border-radius:999px;border:1.5px solid rgba(255,255,255,.28);font-size:15px;font-weight:500;color:#fff;transition:color .4s,border-color .4s,opacity .4s}
-.ritual li.cut::after{content:"";position:absolute;left:10px;right:10px;top:50%;height:2px;background:#fff;transform-origin:left;transform:scaleX(0);animation:strike .45s cubic-bezier(.6,0,.3,1) forwards}
-.ritual li.cut{animation:dim .45s forwards}
-.ritual li.cut:nth-child(1),.ritual li.cut:nth-child(1)::after{animation-delay:.6s}
-.ritual li.cut:nth-child(2),.ritual li.cut:nth-child(2)::after{animation-delay:1s}
-.ritual li.cut:nth-child(4),.ritual li.cut:nth-child(4)::after{animation-delay:1.4s}
-.ritual li.keep{animation:keep .5s 1.9s forwards}
-@keyframes strike{to{transform:scaleX(1)}}
-@keyframes dim{to{opacity:.45}}
-@keyframes keep{to{background:#fff;color:var(--violet);border-color:#fff}}
-.ritual-note{margin-top:14px;font-size:15px;color:#D9C4F0}
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap;text-decoration:none;font-weight:600;border:1px solid transparent;cursor:pointer;transition:background-color .15s,border-color .15s,color .15s,transform .1s}
+.btn:active{transform:translateY(1px)}
+.btn .ico{width:17px;height:17px}
+.btn-primary{height:48px;padding:0 22px 0 18px;border-radius:12px;font-size:16px;background:var(--violet);color:var(--on-violet);box-shadow:var(--shadow-btn)}
+.btn-primary .ico{width:18px;height:18px}
+.btn-primary:hover{background:var(--violet-hover)}
+.btn-secondary{height:36px;padding:0 13px 0 11px;border-radius:10px;font-size:14.5px;font-weight:500;background:var(--raised);border-color:var(--line-2);color:var(--ink)}
+.btn-secondary .ico{width:15px;height:15px;color:var(--muted)}
+.btn-secondary:hover{border-color:var(--muted);background:var(--sunk)}
+.btn-strong{height:46px;padding:0 18px 0 15px;border-radius:12px;font-size:15.5px;background:var(--raised);border-color:var(--line-2);color:var(--ink);box-shadow:var(--shadow-card)}
+.btn-strong:hover{border-color:var(--muted)}
 
-.get{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 20px;border-radius:14px;font-weight:600;font-size:16px;text-decoration:none;background:#fff;color:var(--violet);transition:transform .15s}
-.btn:hover{transform:translateY(-1px)}
-.btn.ghost{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}
-.btn svg{width:18px;height:18px;flex:none}
-.btn small{font-weight:500;opacity:.7;font-size:13px}
+/* ---------- Hero ---------- */
+.hero{padding:48px 0 96px;overflow-x:clip}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:48px;align-items:center}
+h1{font-size:clamp(40px,3vw + 19px,57px);line-height:1.03;letter-spacing:-.034em;font-weight:600;text-wrap:balance}
+@media (min-width:600px) and (max-width:1024px),(min-width:1180px){h1 .nw{white-space:nowrap}}
+.lede{margin-top:22px;font-size:19px;line-height:1.5;color:var(--muted);max-width:29ch;text-wrap:pretty}
+.get{margin-top:40px}
+.get-main{display:flex;flex-wrap:wrap;gap:10px}
+.get-note{flex-basis:100%;margin-top:4px;font-size:14px;color:var(--muted)}
+.get-also{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:28px;padding-top:24px;border-top:1px solid var(--line);max-width:420px}
+.get-also[hidden]{display:none}
+.get-also-label{font-size:14px;color:var(--muted);margin-right:4px}
+.get-also-list{display:contents}
 
-/* the live connect button */
-.demo{display:flex;flex-direction:column;align-items:center;gap:22px}
-.orb{--size:min(300px,62vw);width:var(--size);height:var(--size);border-radius:50%;border:0;cursor:pointer;position:relative;
-  background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 30px 80px -20px rgba(0,0,0,.45);
-  color:#fff;font:700 28px/1 "Schibsted Grotesk",sans-serif;letter-spacing:-.02em;display:grid;place-items:center;transition:background .5s,box-shadow .5s,color .5s}
-.orb svg{width:84px;height:84px;margin-bottom:14px;transition:transform .6s}
-.orb span{display:block}
-.orb::before{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px solid rgba(255,255,255,.0)}
-.orb[data-state="connecting"]::before{border-color:rgba(255,255,255,.5);border-top-color:#fff;animation:spin 1.1s linear infinite}
-.orb[data-state="connected"]{background:var(--signal);color:#05391C;box-shadow:0 0 0 10px rgba(43,214,123,.18),0 30px 90px -10px rgba(43,214,123,.55)}
-.orb[data-state="connected"] svg{transform:rotate(20deg)}
+/* ---------- The four steps panel ---------- */
+.demo{position:relative;isolation:isolate}
+.demo::before{content:"";position:absolute;z-index:-1;inset:-22% -30% -18% -24%;background:radial-gradient(closest-side,var(--glow),transparent);pointer-events:none}
+.panel{background:var(--raised);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-panel);overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.panel-head{display:flex;align-items:center;gap:12px;padding:16px 16px 16px 18px;border-bottom:1px solid var(--line)}
+.panel-icon{width:38px;height:38px;border-radius:8px;flex:none;box-shadow:0 0 0 .5px rgba(0,0,0,.12)}
+.panel-id{min-width:0;flex:1;display:grid;line-height:1.25}
+.panel-name{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.panel-sub{display:grid;font-size:13px;margin-top:1px;color:var(--muted)}
+.panel-sub > span{grid-area:1/1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel-host{font-family:var(--mono);font-size:12px;letter-spacing:-.01em;visibility:hidden}
+.panel[data-state="connected"] .panel-host{visibility:visible}
+.panel[data-state="connected"] .panel-place{visibility:hidden}
+
+.status{flex:none;display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 11px 0 10px;border-radius:999px;background:var(--tint);font-size:13px;font-weight:500;color:var(--muted);transition:background-color .25s,color .25s}
+.status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55;flex:none}
+.panel[data-state="connecting"] .status,.panel[data-state="duo"] .status{color:var(--accent);background:var(--tint-2)}
+.panel[data-state="connecting"] .status-dot,.panel[data-state="duo"] .status-dot{opacity:1;animation:pulse 1s ease-in-out infinite alternate}
+.panel[data-state="connected"] .status{background:var(--signal);color:var(--signal-ink);font-weight:600}
+.panel[data-state="connected"] .status-dot{opacity:1;background:var(--signal-ink)}
+@keyframes pulse{from{opacity:1}to{opacity:.3}}
+
+.steps{list-style:none;padding:10px;margin:0}
+.step{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;column-gap:14px;height:52px;padding:0 14px 0 12px;border-radius:12px;font-size:16px;font-weight:500}
+.step-label{position:relative;justify-self:start;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.step-note{font-size:13px;font-weight:400;color:var(--muted);white-space:nowrap}
+
+/* marker: number, then a spinner while working, then a tick */
+.mk{position:relative;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line-2);transition:background-color .3s;font-size:11.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.mk svg{position:absolute;width:13px;height:13px;color:var(--on-violet);opacity:0;transition:color .3s}
+.mk::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--violet);border-right-color:transparent;opacity:0}
+.steps .step[data-progress="active"] .mk{color:transparent;box-shadow:inset 0 0 0 1px var(--tint-2)}
+.steps .step[data-progress="active"] .mk::after{opacity:1;animation:spin .8s linear infinite}
+.steps .step[data-progress="done"] .mk{background:var(--violet);box-shadow:none;color:transparent}
+.steps .step[data-progress="done"] .mk svg{opacity:1}
+.panel[data-state="connected"]{border-color:var(--signal);box-shadow:var(--shadow-panel),0 0 0 4px var(--signal-ring),0 0 56px -8px var(--signal-glow)}
+.panel[data-state="connected"] .steps .step[data-progress="done"] .mk{background:var(--signal)}
+.panel[data-state="connected"] .steps .step[data-progress="done"] .mk svg{color:var(--signal-ink)}
 @keyframes spin{to{transform:rotate(360deg)}}
-.status{min-height:52px;text-align:center}
-.status b{display:block;font-size:20px}
-.status span{font-size:15px;color:#D9C4F0}
-.hint{font-size:13px;color:#C9B2E6}
 
-/* ---------- PLATFORMS ---------- */
-section{padding:112px 0}
-h2{font-size:clamp(32px,4vw,48px);line-height:1.05;letter-spacing:-.03em;font-weight:800;max-width:18ch}
-.sub{color:var(--mist);margin-top:14px;max-width:52ch}
-.platforms{display:grid;grid-template-columns:repeat(3,1fr);margin-top:64px;border-top:1.5px solid var(--rule)}
-.plat{padding:36px 32px 8px 0}
-.plat + .plat{padding-left:32px;border-left:1.5px solid var(--rule)}
-.plat h3{font-size:24px;letter-spacing:-.02em;margin-top:28px}
-.plat .ver{font-size:14px;color:var(--mist);margin-top:2px}
-.plat ul{padding-left:18px;margin-top:14px;color:var(--ink)}
-.plat li{margin:6px 0}
-.plat li::marker{color:var(--violet-hi)}
-.plat a.dl{display:inline-block;margin-top:20px;font-weight:600;color:var(--violet-hi);text-underline-offset:4px}
+/* load moment: the three steps the app answers get struck through, staggered */
+.step.is-auto .step-label{color:var(--muted)}
+.step.is-auto .step-label::after{content:"";position:absolute;left:0;right:0;top:54%;height:1.5px;border-radius:1px;background:currentColor;transform-origin:left center}
+.step.is-auto .mk{color:var(--muted)}
+.step.is-you{background:var(--tint)}
+.step.is-you .mk{box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent)}
+.step.is-you .step-note{color:var(--accent);font-weight:600}
+.step.is-auto .step-label{animation:dim .5s cubic-bezier(.65,0,.35,1) var(--d) both}
+.step.is-auto .step-label::after{animation:strike .5s cubic-bezier(.65,0,.35,1) var(--d) both}
+.step.is-auto .step-note{animation:note .4s ease-out calc(var(--d) + .2s) both}
+.step.is-you{animation:you .5s ease-out 1s both}
+.step.is-you .step-note{animation:note .4s ease-out 1.05s both}
+.step:nth-child(1){--d:.25s}
+.step:nth-child(2){--d:.5s}
+.step:nth-child(4){--d:.75s}
+@keyframes strike{from{transform:scaleX(0)}}
+@keyframes dim{from{color:var(--ink)}}
+@keyframes note{from{opacity:0;transform:translateX(-4px)}}
+@keyframes you{from{background:transparent}}
 
-/* tiny device vignettes */
-.vig{height:150px;border-radius:var(--r-lg);background:var(--lilac);position:relative;overflow:hidden}
-.mac .bar{position:absolute;inset:0 0 auto 0;height:26px;background:rgba(255,255,255,.75);display:flex;justify-content:flex-end;align-items:center;gap:12px;padding-right:14px;font-size:11px;color:#333}
-.mac .bar i{width:14px;height:14px;border-radius:50%;background:var(--violet);display:block}
-.mac .menu{position:absolute;right:28px;top:32px;width:170px;background:#fff;border-radius:var(--r-sm);box-shadow:0 12px 30px -8px rgba(36,6,63,.3);padding:6px;font-size:12px;color:#222}
-.mac .menu div{padding:5px 8px;border-radius:6px}
-.mac .menu div:first-child{background:var(--violet);color:#fff;font-weight:600}
-.mac .menu hr{border:0;border-top:1px solid #eee;margin:4px 0}
-.ios .cc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;grid-template-columns:repeat(4,44px);gap:10px}
-.ios .cc i{width:44px;height:44px;border-radius:13px;background:rgba(36,6,63,.12);display:block}
-.ios .cc i.on{background:var(--violet);display:grid;place-items:center}
-.ios .cc i.on svg{width:24px;height:24px}
-.and .w{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:220px;background:#fff;border-radius:24px;padding:14px;box-shadow:0 12px 30px -10px rgba(36,6,63,.3);color:#222;font-size:12px}
-.and .w b{font-size:14px;display:flex;align-items:center;gap:8px}
-.and .w b::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--signal)}
-.and .row{display:flex;gap:6px;margin-top:10px}
-.and .row span{flex:1;text-align:center;padding:7px 0;border-radius:999px;border:1.5px solid var(--violet);color:var(--violet);font-weight:600}
-.and .row span.f{background:var(--violet);color:#fff}
+/* activity line: every state stacked in one cell so the panel never changes height */
+.activity{display:grid;align-items:center;min-height:82px;margin:0 18px;padding:14px 0;border-top:1px solid var(--line)}
+.activity > *{grid-area:1/1;visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s}
+.act-text{font-size:14px;line-height:1.45;color:var(--muted);text-wrap:pretty}
+.panel[data-state="idle"] .act-idle,
+.panel[data-state="connecting"] .act-working,
+.panel[data-state="duo"] .duo,
+.panel[data-state="connected"] .act-done{visibility:visible;opacity:1}
+.act-done{color:var(--ink)}
 
-/* ---------- PASSWORD ---------- */
-.trust{background:var(--lilac)}
-.trust-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:start}
-.facts{display:grid;gap:28px}
-.facts h4{font-size:19px;letter-spacing:-.01em}
-.facts p{color:var(--mist);margin-top:4px;max-width:52ch}
+.duo{position:relative;overflow:hidden;display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 9px 9px 10px;border-radius:12px;background:var(--sunk);border:1px solid var(--line)}
+.duo-ic{width:32px;height:32px;border-radius:8px;background:var(--tint-2);color:var(--accent);display:grid;place-items:center}
+.duo-ic svg{width:17px;height:17px}
+.duo-text{min-width:0;line-height:1.3}
+.duo-text b{display:block;font-size:13.5px;font-weight:600}
+.duo-text span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.duo-approve{height:30px;padding:0 12px;border-radius:8px;border:0;background:var(--violet);color:var(--on-violet);font-size:13px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-btn);transition:background-color .15s}
+.duo-approve:hover{background:var(--violet-hover)}
+.duo-timer{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--violet);opacity:.45;transform-origin:left;transform:scaleX(0)}
+.panel[data-state="duo"] .duo-timer{animation:timer 4s linear both}
+@keyframes timer{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-footer{padding:48px 0 64px;color:var(--mist);font-size:15px}
-footer a{text-underline-offset:3px}
-footer .wrap{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between}
+.panel-foot{padding:0 16px 16px}
+.connect{width:100%;height:48px;border-radius:12px;border:1px solid transparent;background:var(--violet);color:var(--on-violet);font-size:16px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-btn);transition:background-color .15s,color .15s,border-color .15s,transform .1s}
+.connect:hover{background:var(--violet-hover)}
+.connect:active{transform:translateY(1px)}
+.panel[data-state="connecting"] .connect,.panel[data-state="duo"] .connect,.panel[data-state="connected"] .connect{background:var(--raised);color:var(--ink);border-color:var(--line-2);box-shadow:none}
+.panel[data-state="connecting"] .connect:hover,.panel[data-state="duo"] .connect:hover,.panel[data-state="connected"] .connect:hover{background:var(--sunk);border-color:var(--muted)}
+.demo-caption{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+/* Without JavaScript the panel is a still picture: no live button, no caption */
+html:not(.js) .connect{cursor:default}
+html:not(.js) .demo-caption{visibility:hidden}
 
-@media (max-width:860px){
-  .hero-grid{grid-template-columns:1fr;padding:24px 0 72px}
-  .demo{order:-1}
-  .platforms{grid-template-columns:1fr}
-  .plat,.plat + .plat{padding:36px 0 8px;border-left:0}
-  .plat + .plat{border-top:1.5px solid var(--rule)}
-  .trust-grid{grid-template-columns:1fr;gap:40px}
-  section{padding:80px 0}
+/* ---------- Sections ---------- */
+.section{padding:32px 0 104px}
+h2{font-size:clamp(30px,1.6vw + 20px,42px);line-height:1.08;letter-spacing:-.028em;font-weight:600;text-wrap:balance;max-width:20ch}
+.sub{margin-top:14px;font-size:17px;color:var(--muted);max-width:46ch;text-wrap:pretty}
+
+/* ---------- Platforms bento ---------- */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;margin-top:48px}
+.card{grid-column:span 3;display:flex;flex-direction:column;background:var(--raised);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:var(--shadow-card);min-width:0}
+.card .stage{order:-1}
+.card-copy{flex:1;display:flex;flex-direction:column;padding:22px 18px 18px}
+.card-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h3{font-size:22px;line-height:1.2;letter-spacing:-.02em;font-weight:600}
+.mine{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:var(--tint-2);color:var(--accent);font-size:12.5px;font-weight:500}
+.mine[hidden]{display:none}
+.req{margin-top:4px;font-size:15px;color:var(--muted)}
+.caps{list-style:none;padding:0;margin:20px 0 0;font-size:15px}
+.caps li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.caps li:last-child{border-bottom:1px solid var(--line)}
+.caps svg{width:15px;height:15px;flex:none;margin-top:4px;color:var(--accent)}
+.card-btn{align-self:flex-start;margin-top:auto}
+.caps{margin-bottom:24px}
+.card .card-btn{height:40px;padding:0 15px;border-radius:10px;font-size:15px;font-weight:600;background:var(--raised);border-color:var(--line-2);color:var(--ink)}
+.card .card-btn:hover{border-color:var(--muted);background:var(--sunk)}
+.card.featured .card-btn{height:44px;padding:0 18px;border-radius:11px;background:var(--violet);border-color:transparent;color:var(--on-violet);box-shadow:var(--shadow-btn)}
+.card.featured .card-btn:hover{background:var(--violet-hover)}
+
+.card.featured{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:stretch}
+.card.featured .stage{order:0}
+.card.featured .card-copy{justify-content:center;padding:32px 40px 32px 28px}
+.card.featured h3{font-size:28px}
+.card.featured .caps{margin-top:24px}
+.card.featured .caps{margin-bottom:28px}
+.card.featured .card-btn{margin-top:0}
+.bento.is-equal .card{grid-column:span 2}
+
+/* ---------- Stages: fixed colours, never themed ---------- */
+.stage{--stage-h:240px;--pw:236px;--dev-top:22px;--mac-fs:13.5px;position:relative;height:var(--stage-h);border-radius:13px;overflow:hidden;isolation:isolate;container-type:inline-size;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  background:
+    radial-gradient(150% 90% at 6% 122%,rgba(196,132,255,.20) 0 50%,transparent calc(50% + 1px)),
+    radial-gradient(130% 80% at 104% 128%,rgba(34,4,60,.50) 0 50%,transparent calc(50% + 1px)),
+    radial-gradient(80% 70% at 88% 0%,rgba(178,102,245,.42),transparent 62%),
+    radial-gradient(70% 70% at 0% 100%,rgba(16,2,34,.45),transparent 70%),
+    linear-gradient(158deg,#6A12A8 0%,#4B0B80 48%,#2A0647 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.stage svg{display:block}
+.card.featured .stage{--stage-h:360px}
+.card.featured .stage-mac{--mac-fs:16.5px;--mb-h:1.95em}
+.stage-ios{--pw:320px;--dev-top:16px}
+.stage-and{--pw:300px;--dev-top:16px}
+.card.featured .stage-ios{--pw:380px;--dev-top:26px}
+.card.featured .stage-and{--pw:370px;--dev-top:26px}
+.bento.is-equal .stage-ios{--pw:290px;--dev-top:18px}
+.bento.is-equal .stage-and{--pw:280px;--dev-top:18px}
+.dev{position:absolute;inset:0;-webkit-mask-image:linear-gradient(#000 calc(100% - 36px),transparent);mask-image:linear-gradient(#000 calc(100% - 36px),transparent)}
+
+/* Mac: top-right corner of the desktop */
+.mac{position:absolute;inset:0;font-size:var(--mac-fs);line-height:1;-webkit-mask-image:linear-gradient(#000 calc(100% - 44px),transparent);mask-image:linear-gradient(#000 calc(100% - 44px),transparent)}
+.card.featured .stage-mac .mac{-webkit-mask-image:none;mask-image:none}
+.mb{height:var(--mb-h,1.85em);white-space:nowrap;display:flex;align-items:center;padding:0 .5em 0 1em;background:rgba(24,6,44,.40);-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:inset 0 -.5px 0 rgba(255,255,255,.07);font-weight:500;letter-spacing:.005em}
+.mb-left{display:none;align-items:center;gap:1.35em;font-weight:500}
+.mb-left b{font-weight:700}
+.mb-left svg{width:1.05em;height:1.05em;margin-top:-.15em}
+@container (min-width:600px){.mb-left{display:flex}}
+.mb-right{display:flex;align-items:center;gap:.12em;margin-left:auto}
+.mb-item{position:relative;height:1.55em;padding:0 .5em;display:flex;align-items:center;border-radius:.34em}
+.mb-item > svg{width:1.18em;height:1.18em}
+.mb-item.is-open{background:rgba(255,255,255,.24)}
+.mb-item .g{width:1.22em;height:1.22em}
+.mb-clock{padding:0 .45em;font-variant-numeric:tabular-nums}
+.bat{position:relative;width:1.9em;height:.92em;border-radius:.3em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);padding:.14em}
+.bat::after{content:"";position:absolute;right:-.2em;top:50%;width:.12em;height:.34em;margin-top:-.17em;border-radius:0 .1em .1em 0;background:rgba(255,255,255,.55)}
+.bat i{display:block;width:76%;height:100%;border-radius:.14em;background:#fff}
+.mmenu{position:absolute;top:calc(100% + .3em);left:0;width:max-content;min-width:14em;padding:.36em;border-radius:.62em;background:rgba(46,30,64,.80);-webkit-backdrop-filter:blur(30px) saturate(1.8);backdrop-filter:blur(30px) saturate(1.8);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2),0 0 0 .5px rgba(0,0,0,.5),0 .9em 2.4em rgba(12,0,28,.5);font-weight:400;color:rgba(255,255,255,.9);white-space:nowrap;text-align:left}
+.mi{position:relative;height:1.7em;display:flex;align-items:center;padding:0 .75em 0 1.62em;border-radius:.4em}
+.mi.is-hl{background:#7444D0;color:#fff}
+.mi.is-dis{color:rgba(255,255,255,.4)}
+.mi-check{position:absolute;left:.48em;top:50%;width:.82em;height:.82em;margin-top:-.41em}
+.mi-sub{margin-left:auto;padding-left:1.4em;box-sizing:content-box;width:.62em;height:.62em;opacity:.75}
+.msep{display:block;height:1px;margin:.34em .72em;background:rgba(255,255,255,.17)}
+
+/* iPhone: Control Center */
+.iph{position:absolute;left:50%;top:var(--dev-top);width:40em;font-size:calc(var(--pw) / 40);transform:translateX(-50%);padding:.32em;border-radius:6.6em;background:linear-gradient(140deg,#6d6672,#2c2830 32%,#433e48 70%,#2a262e);box-shadow:0 2.5em 5em rgba(10,0,25,.5)}
+.iph-bezel{padding:1.05em;border-radius:6.3em;background:#050507}
+.iph-screen{position:relative;height:80em;border-radius:5.25em;overflow:hidden;
+  background:
+    linear-gradient(rgba(14,2,28,.28),rgba(14,2,28,.28)),
+    radial-gradient(55% 35% at 22% 16%,rgba(185,110,250,.7),transparent 70%),
+    radial-gradient(60% 40% at 90% 48%,rgba(120,40,200,.75),transparent 72%),
+    radial-gradient(70% 40% at 20% 80%,rgba(80,20,150,.8),transparent 70%),
+    linear-gradient(180deg,#45127a,#24073f 60%,#16042a)}
+.iph-island{position:absolute;top:1.1em;left:50%;width:12em;height:3.55em;margin-left:-6em;border-radius:2em;background:#000}
+.iph-status{position:absolute;top:1.1em;left:0;right:0;height:3.55em;display:flex;align-items:center;justify-content:space-between;padding:0 2.7em 0 3.7em}
+.iph-time{font-size:1.62em;font-weight:600;letter-spacing:-.01em}
+.iph-icons{display:flex;align-items:center;gap:.55em}
+.iph-icons svg{height:1.2em;width:auto}
+.ibat{position:relative;width:2.5em;height:1.2em;border-radius:.38em;box-shadow:inset 0 0 0 .12em rgba(255,255,255,.45);padding:.2em}
+.ibat i{display:block;width:80%;height:100%;border-radius:.2em;background:#fff}
+.ibat::after{content:"";position:absolute;right:-.28em;top:50%;width:.16em;height:.42em;margin-top:-.21em;border-radius:0 .1em .1em 0;background:rgba(255,255,255,.45)}
+.cc{position:absolute;top:7.2em;left:0;right:0;display:grid;grid-template-columns:repeat(4,6.4em);grid-auto-rows:6.4em;gap:1.6em;justify-content:center}
+.cc > *{background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 .06em rgba(255,255,255,.08)}
+.cc svg{color:#fff}
+.cc-conn{grid-column:1/3;grid-row:1/3;border-radius:3em;display:grid;grid-template-columns:1fr 1fr;place-items:center;padding:.9em}
+.cc-btn{width:5.6em;height:5.6em;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center}
+.cc-btn svg{width:2.6em;height:2.6em}
+.cc-btn.on{background:#0A84FF}
+.cc-slider{grid-row:span 2;position:relative;overflow:hidden;border-radius:2.9em}
+.cc-slider i{position:absolute;left:0;right:0;bottom:0;height:var(--lvl);background:#fff}
+.cc-slider svg{position:absolute;left:50%;bottom:1.7em;width:2.5em;height:2.5em;margin-left:-1.25em;color:#6E6878}
+.cc-ctl{border-radius:50%;display:grid;place-items:center}
+.cc-ctl svg{width:2.6em;height:2.6em}
+.cc-ca{background:#fff;box-shadow:0 .4em 1.6em rgba(10,0,30,.35)}
+.cc-ca svg{width:3.4em;height:3.4em;color:#57068C}
+.cc-focus{grid-column:3/5;border-radius:3.2em;display:flex;align-items:center;gap:.9em;padding:0 .8em}
+.cc-focus span{width:4.8em;height:4.8em;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none}
+.cc-focus span svg{width:2.3em;height:2.3em}
+.cc-focus b{font-size:1.6em;font-weight:600;letter-spacing:-.01em}
+.cc-sq{border-radius:1.9em}
+
+/* Android: home screen widget */
+.stage-and{font-family:"Google Sans",Roboto,"Instrument Sans",system-ui,sans-serif}
+.pix{position:absolute;left:50%;top:var(--dev-top);width:40em;font-size:calc(var(--pw) / 40);transform:translateX(-50%);padding:.28em;border-radius:5.2em;background:linear-gradient(150deg,#55505a,#26232a 35%,#3b3740);box-shadow:0 2.5em 5em rgba(10,0,25,.5)}
+.pix-bezel{padding:.95em;border-radius:4.95em;background:#060608}
+.pix-screen{position:relative;height:80em;border-radius:4em;overflow:hidden;color:#fff;
+  background:
+    radial-gradient(50% 30% at 85% 12%,rgba(205,150,255,.55),transparent 70%),
+    radial-gradient(70% 40% at 0% 55%,rgba(140,60,220,.55),transparent 70%),
+    linear-gradient(172deg,#5d1f9a 0%,#3b0e6a 46%,#1d0638 100%)}
+.pix-cam{position:absolute;top:1.25em;left:50%;width:1.6em;height:1.6em;margin-left:-.8em;border-radius:50%;background:#000;box-shadow:0 0 0 .22em rgba(0,0,0,.6)}
+.pix-status{position:absolute;top:.8em;left:0;right:0;height:2.1em;display:flex;align-items:center;justify-content:space-between;padding:0 2.6em;font-size:1.36em;font-weight:500}
+.pix-icons{display:flex;align-items:center;gap:.38em}
+.pix-icons svg{height:.92em;width:auto}
+.pbat{width:.56em;height:1em;border-radius:.14em;background:linear-gradient(to top,#fff 78%,rgba(255,255,255,.4) 78%)}
+.pix-glance{position:absolute;top:2.05em;left:1.2em;font-size:2.15em;font-weight:400;letter-spacing:-.01em}
+.wdg{position:absolute;top:8.6em;left:1.7em;right:1.7em;height:14.8em;padding:2.1em 2em 1.9em 2.3em;border-radius:2.6em;background:#EFE4FF;color:#1E0B36;display:flex;flex-direction:column;justify-content:space-between}
+.wdg-top{display:flex;justify-content:space-between;align-items:flex-start}
+.wdg-title{display:flex;align-items:center;gap:.4em;font-size:2.35em;font-weight:500;letter-spacing:-.01em;line-height:1.1}
+.wdg-title i{width:.36em;height:.36em;border-radius:50%;background:#2BD67B;box-shadow:0 0 0 .1em rgba(43,214,123,.25)}
+.wdg-sub{margin-top:.35em;font-size:1.5em;color:#5E4C78}
+.wdg-power{width:5.2em;height:5.2em;border-radius:50%;background:#6A26B5;color:#fff;display:grid;place-items:center;flex:none}
+.wdg-power svg{width:2.4em;height:2.4em}
+.wdg-row{display:flex;gap:1em}
+.wdg-pill{flex:1;height:2.75em;border-radius:1.4em;display:grid;place-items:center;font-size:1.5em;font-weight:500}
+.wdg-pill.is-out{box-shadow:inset 0 0 0 .1em #8A70AE;color:#43256A}
+.wdg-pill.is-on{background:#6A26B5;color:#fff}
+.pix-apps{position:absolute;top:26em;left:2.6em;right:2.6em;display:flex;justify-content:space-between}
+.pix-apps span{width:5.7em;height:5.7em;border-radius:50%;background:#E6D8FB;color:#3A1C63;display:grid;place-items:center}
+.pix-apps svg{width:2.5em;height:2.5em}
+.pix-search{position:absolute;top:34.4em;left:2.2em;right:2.2em;height:5.4em;border-radius:2.7em;background:rgba(239,228,255,.92);display:flex;align-items:center;padding:0 1.9em;color:#3A1C63}
+.pix-search svg{width:2.2em;height:2.2em}
+
+/* ---------- Password ---------- */
+.trust{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;padding-top:64px;border-top:1px solid var(--line)}
+.facts{display:grid}
+.fact{padding:22px 0;border-bottom:1px solid var(--line)}
+.fact:first-child{padding-top:4px}
+.fact h3{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.fact p{margin-top:4px;color:var(--muted);max-width:52ch}
+
+/* ---------- Footer ---------- */
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 32px;padding:28px 0 48px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.foot a{color:var(--ink);text-decoration-color:var(--line-2);text-underline-offset:3px;text-decoration-thickness:1px}
+.foot a:hover{text-decoration-color:currentColor}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1024px){
+  .bento.is-equal .card{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .bento.is-equal .card .stage{order:0;--stage-h:280px;--mac-fs:13px}
+  .bento.is-equal .stage-mac .mac{-webkit-mask-image:none;mask-image:none}
+  .bento.is-equal .stage-ios{--pw:320px;--dev-top:20px}
+  .bento.is-equal .stage-and{--pw:300px;--dev-top:20px}
+  .card.featured .stage-ios{--pw:340px}
+  .card.featured .stage-and{--pw:330px}
+}
+@media (max-width:1024px){
+  .hero{padding:32px 0 88px}
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:56px}
+  .demo{max-width:460px;width:100%}
+}
+@media (max-width:900px){
+  .trust{grid-template-columns:minmax(0,1fr);gap:28px}
+}
+@media (max-width:760px){
+  .wrap{padding:0 20px}
+  .card,.card.featured,.bento.is-equal .card{grid-column:1/-1;display:flex;flex-direction:column}
+  .card .stage,.card.featured .stage,.bento.is-equal .card .stage{order:-1;--stage-h:220px;--mac-fs:13px;--mb-h:1.85em}
+  .card.featured .stage-mac .mac,.bento.is-equal .stage-mac .mac{-webkit-mask-image:linear-gradient(#000 calc(100% - 40px),transparent);mask-image:linear-gradient(#000 calc(100% - 40px),transparent)}
+  .card .stage-ios,.card.featured .stage-ios,.bento.is-equal .stage-ios{--pw:270px;--dev-top:16px}
+  .card .stage-and,.card.featured .stage-and,.bento.is-equal .stage-and{--pw:256px;--dev-top:16px}
+  .card.featured .card-copy{padding:22px 18px 18px}
+  .card.featured h3{font-size:22px}
+  .card.featured .caps{margin-top:20px}
+  .card.featured .caps{margin-bottom:24px}
+  .bento{gap:12px;margin-top:36px}
+  .section{padding:24px 0 88px}
+}
+@media (max-width:480px){
   .wrap{padding:0 16px}
+  .nav{height:64px}
+  .hero{padding:20px 0 72px}
+  h1{font-size:38px}
+  .lede{font-size:17.5px;margin-top:16px}
+  .get{margin-top:32px}
+  .panel-head{padding:14px 12px 14px 14px;gap:10px}
+  .panel-icon{width:34px;height:34px}
+  .steps{padding:6px}
+  .step{padding:0 10px 0 8px;column-gap:10px}
+  .activity{margin:0 14px}
+  .panel-foot{padding:0 12px 12px}
+  .duo-text span{display:none}
+  .panel-host{font-size:11px;letter-spacing:-.02em}
+  .get.is-equal .btn-strong{flex:1 1 0;min-width:0;padding:0 8px;gap:7px}
+  .btn-secondary{height:40px}
+  .step{height:48px;font-size:15px}
+  .connect{height:46px}
+  .status{padding:0 9px 0 8px}
 }
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;transition:none!important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="wrap">
-    <nav>
-      <a class="brand" href="/">
-        <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#fff" fill-opacity=".16"/><circle cx="16" cy="16" r="9" fill="none" stroke="#fff" stroke-width="2"/><path d="M16 7c-4 4-4 14 0 18M16 7c4 4 4 14 0 18M7.5 13c5 2 12 2 17 0M7.5 19c5 2 12 2 17 0" fill="none" stroke="#fff" stroke-width="1.6"/></svg>
-        ConnectAnytime
-      </a>
-      <a class="gh" href="https://github.com/muunkk/connectanytime">Source on GitHub</a>
-    </nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-globe" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round"><circle cx="12" cy="12" r="9.5" stroke-width="2"/><path stroke-width="1.45" d="M11.71 2.74C11.37 3.18 10.39 4.17 9.67 5.39C8.96 6.61 7.93 8.65 7.43 10.08C6.93 11.51 6.8 12.77 6.7 13.96C6.59 15.15 6.59 16.1 6.82 17.22C7.04 18.34 7.84 20.11 8.04 20.69M13.35 2.86C13.07 3.49 12.09 5.38 11.71 6.61C11.34 7.85 11.19 9.06 11.1 10.29C11.01 11.51 10.98 12.84 11.18 13.96C11.39 15.08 11.76 15.9 12.33 17.02C12.89 18.14 14.2 20.08 14.57 20.69M15.26 3.35C15.13 3.96 14.41 5.74 14.45 7.02C14.49 8.3 15.05 9.8 15.51 11.02C15.97 12.24 16.53 13.37 17.22 14.37C17.92 15.37 19.26 16.58 19.67 17.02M3.35 8.04C4.03 8.38 6 9.61 7.43 10.08C8.86 10.56 10.57 10.74 11.92 10.9C13.26 11.05 14.07 11.43 15.51 11.02C16.95 10.61 19.72 8.88 20.57 8.45M2.74 12.94C3.52 13.38 5.83 14.91 7.43 15.59C9.03 16.27 10.63 16.94 12.33 17.02C14.03 17.1 16.17 16.49 17.63 16.08C19.09 15.67 20.52 14.82 21.1 14.57"/></g><g fill="currentColor"><circle cx="7.43" cy="10.08" r="1.75"/><circle cx="15.51" cy="11.02" r="1.75"/><circle cx="12.33" cy="17.02" r="1.75"/></g></symbol>
+  <mask id="m-slash" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff"/><path d="M2.6 2.6 21.4 21.4" stroke="#000" stroke-width="4.6"/></mask>
+  <symbol id="i-globe-slash" viewBox="0 0 24 24"><g mask="url(#m-slash)"><use href="#i-globe" width="24" height="24"/></g><path d="M3.2 3.2 20.8 20.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol>
+  <symbol id="i-iphone" viewBox="0 0 24 24"><rect x="6.25" y="2.25" width="11.5" height="19.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="10" y="4.6" width="4" height="1.6" rx=".8" fill="currentColor"/></symbol>
+  <symbol id="i-android" viewBox="2.5 2.5 19 19"><path fill="currentColor" fill-rule="evenodd" d="M3.5 17.2a8.5 8.5 0 0 1 17 0zM8.6 12.6a1.1 1.1 0 1 0 0 2.2a1.1 1.1 0 1 0 0-2.2zM15.4 12.6a1.1 1.1 0 1 0 0 2.2a1.1 1.1 0 1 0 0-2.2z"/><path d="M7.4 10.6 5.7 7.7M16.6 10.6l1.7-2.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><g fill="currentColor" stroke="currentColor" stroke-width=".9" stroke-linejoin="round"><path d="M1.39 9.39A15 15 0 0 1 22.61 9.39L20.49 11.51A12 12 0 0 0 3.51 11.51Z"/><path d="M5.28 13.28A9.5 9.5 0 0 1 18.72 13.28L16.6 15.4A6.5 6.5 0 0 0 7.4 15.4Z"/><path d="M12 20L9.17 17.17A4 4 0 0 1 14.83 17.17Z"/></g></symbol>
+</svg>
 
-    <div class="hero-grid">
-      <div>
-        <h1>The NYU Shanghai VPN, one tap away.</h1>
+<header class="wrap nav">
+  <a class="brand" href="/">
+    <img src="/apple-touch-icon.png" width="28" height="28" alt="">
+    ConnectAnytime
+  </a>
+  <a class="nav-link" href="https://github.com/muunkk/connectanytime">
+    <svg class="ico" aria-hidden="true"><use href="#i-github"/></svg>GitHub
+  </a>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1 id="hero-title">The <span class="nw">NYU Shanghai VPN,</span> <span class="nw">one tap away.</span></h1>
         <p class="lede">Save your NetID and password once. After that, you only approve Duo.</p>
 
-        <ol class="ritual" aria-label="What Cisco Secure Client asks for each time">
-          <li class="cut">Type your password</li>
-          <li class="cut">Type “push”</li>
-          <li class="keep">Approve Duo</li>
-          <li class="cut">Click Accept</li>
-        </ol>
-        <p class="ritual-note">Cisco asks for all four, every time. ConnectAnytime does three of them for you.</p>
-
-        <div class="get">
-          <a class="btn" data-os="mac" href="https://github.com/muunkk/connectanytime/releases/latest/download/ConnectAnytime.dmg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.2.7-3 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.3-.6 3-1.4z"/></svg>Download for Mac</a>
-          <a class="btn ghost" data-os="ios" href="https://testflight.apple.com/join/UbU8ewh8">iPhone <small>TestFlight</small></a>
-          <a class="btn ghost" data-os="android" href="/download/android">Android <small>APK</small></a>
+        <div class="get" data-get>
+          <div class="get-main" data-get-main>
+            <a class="btn btn-primary" data-os="mac" data-label="Download for Mac" data-short="Mac" data-note="macOS 13 or later, alongside Cisco Secure Client." href="https://github.com/muunkk/connectanytime/releases/latest/download/ConnectAnytime.dmg"><svg class="ico" aria-hidden="true"><use href="#i-apple"/></svg><span class="btn-label">Download for Mac</span></a>
+            <p class="get-note" data-get-note>macOS 13 or later, alongside Cisco Secure Client.</p>
+          </div>
+          <div class="get-also" data-get-also>
+            <span class="get-also-label">Also for</span>
+            <span class="get-also-list" data-get-also-list>
+              <a class="btn btn-secondary" data-os="ios" data-label="Get the iPhone beta" data-short="iPhone" data-note="Opens TestFlight. No Cisco app needed." href="https://testflight.apple.com/join/UbU8ewh8"><svg class="ico" aria-hidden="true"><use href="#i-iphone"/></svg><span class="btn-label">iPhone</span></a>
+              <a class="btn btn-secondary" data-os="android" data-label="Download for Android" data-short="Android" data-note="APK for Android 10 or later. No Cisco app needed." href="/download/android"><svg class="ico" aria-hidden="true"><use href="#i-android"/></svg><span class="btn-label">Android</span></a>
+            </span>
+          </div>
         </div>
       </div>
 
       <div class="demo">
-        <button class="orb" id="orb" data-state="idle" aria-live="polite">
-          <span>
-            <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18" fill="none" stroke="currentColor" stroke-width="3.5"/><path d="M24 6c-8 7-8 29 0 36M24 6c8 7 8 29 0 36M7 18c10 4 24 4 34 0M7 30c10 4 24 4 34 0" fill="none" stroke="currentColor" stroke-width="3"/></svg>
-            <span id="orbLabel">Connect</span>
-          </span>
-        </button>
-        <div class="status" aria-live="polite"><b id="st">Not connected</b><span id="st2">Try it. This one’s a demo.</span></div>
-      </div>
-    </div>
-  </div>
-</header>
-
-<main>
-  <section>
-    <div class="wrap">
-      <h2>On your Mac, your iPhone and your Android phone.</h2>
-      <p class="sub">Three apps, one job. Each one fits the way its platform works.</p>
-
-      <div class="platforms">
-        <div class="plat" id="mac">
-          <div class="vig mac" aria-hidden="true">
-            <div class="bar"><span>Wi‑Fi</span><i></i><span>Thu 9:41</span></div>
-            <div class="menu"><div>Connect</div><hr><div>Auto-Connect Networks</div><div>Launch at Login</div></div>
+        <div class="panel" data-demo data-state="idle">
+          <div class="panel-head">
+            <img class="panel-icon" src="/apple-touch-icon.png" width="34" height="34" alt="">
+            <div class="panel-id">
+              <span class="panel-name">ConnectAnytime</span>
+              <span class="panel-sub"><span class="panel-place">NYU Shanghai VPN</span><span class="panel-host">vpn.shanghai.nyu.edu</span></span>
+            </div>
+            <span class="status"><span class="status-dot"></span><span data-status>Not connected</span></span>
           </div>
-          <h3>Mac</h3>
-          <p class="ver">macOS 13 or later, alongside Cisco Secure Client</p>
-          <ul>
-            <li>Connect from the menu bar</li>
-            <li>Connects on its own on networks you pick</li>
-            <li>Keyboard shortcut through Raycast</li>
-          </ul>
-          <a class="dl" href="https://github.com/muunkk/connectanytime/releases/latest/download/ConnectAnytime.dmg">Download for Mac</a>
-        </div>
 
-        <div class="plat" id="ios">
-          <div class="vig ios" aria-hidden="true">
-            <div class="cc"><i></i><i class="on"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="none" stroke="#fff" stroke-width="4"/><path d="M24 7c-8 7-8 27 0 34M24 7c8 7 8 27 0 34M8 19c10 4 22 4 32 0M8 29c10 4 22 4 32 0" fill="none" stroke="#fff" stroke-width="3.4"/></svg></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          </div>
-          <h3>iPhone</h3>
-          <p class="ver">No Cisco app needed. Beta on TestFlight.</p>
-          <ul>
-            <li>Control Center toggle, Siri and the Action button</li>
-            <li>Stays connected through Wi‑Fi and cellular switches</li>
-            <li>Rejoins your session without another Duo push</li>
-          </ul>
-          <a class="dl" href="https://testflight.apple.com/join/UbU8ewh8">Join the TestFlight beta</a>
-        </div>
+          <ol class="steps" aria-label="What Cisco Secure Client asks for, every time">
+            <li class="step is-auto" data-step><span class="mk" aria-hidden="true">1<svg><use href="#i-check"/></svg></span><span class="step-label">Type your password</span><span class="step-note">Done for you</span></li>
+            <li class="step is-auto" data-step><span class="mk" aria-hidden="true">2<svg><use href="#i-check"/></svg></span><span class="step-label">Type “push”</span><span class="step-note">Done for you</span></li>
+            <li class="step is-you" data-step><span class="mk" aria-hidden="true">3<svg><use href="#i-check"/></svg></span><span class="step-label">Approve Duo</span><span class="step-note">You</span></li>
+            <li class="step is-auto" data-step><span class="mk" aria-hidden="true">4<svg><use href="#i-check"/></svg></span><span class="step-label">Click Accept</span><span class="step-note">Done for you</span></li>
+          </ol>
 
-        <div class="plat" id="android">
-          <div class="vig and" aria-hidden="true">
-            <div class="w"><b>Connected</b><div style="color:#777;margin-top:2px">via Wi‑Fi</div><div class="row"><span class="f">⏻</span><span>USB</span><span class="f">Hotspot</span></div></div>
+          <div class="activity">
+            <p class="act-text act-idle">Cisco Secure Client asks for all four, every time. ConnectAnytime does three of them for you.</p>
+            <p class="act-text act-working" data-working>Typing your password…</p>
+            <div class="duo">
+              <span class="duo-ic" aria-hidden="true"><svg><use href="#i-iphone"/></svg></span>
+              <span class="duo-text"><b>Duo push sent to your phone</b><span>Approve it to finish connecting</span></span>
+              <button class="duo-approve" type="button" data-approve>Approve</button>
+              <span class="duo-timer" aria-hidden="true"></span>
+            </div>
+            <p class="act-text act-done">That’s it. Approving Duo was the only thing you did.</p>
           </div>
-          <h3>Android</h3>
-          <p class="ver">Android 10 or later. No Cisco app needed.</p>
-          <ul>
-            <li>Home screen widget and Quick Settings tile</li>
-            <li>Share the VPN over hotspot or USB</li>
-            <li>Rejoins your session without another Duo push</li>
-          </ul>
-          <a class="dl" href="/download/android">Download the APK</a>
+
+          <div class="panel-foot">
+            <button class="connect" type="button" data-connect disabled>Connect</button>
+          </div>
         </div>
+        <p class="demo-caption">This one’s a demo. Try it.</p>
+        <p class="sr-only" aria-live="polite" data-live></p>
       </div>
     </div>
   </section>
 
-  <section class="trust">
-    <div class="wrap trust-grid">
-      <div>
-        <h2>Your password stays with you.</h2>
-        <p class="sub">All three apps are open source, so you can read exactly what they do.</p>
+  <section class="section" aria-labelledby="platforms-title">
+    <div class="wrap">
+      <h2 id="platforms-title">On your Mac, your iPhone and your Android phone.</h2>
+      <p class="sub">Three apps, one job. Each one fits the way its platform works.</p>
+
+      <div class="bento" data-bento>
+        <article class="card featured" data-os="mac">
+          <div class="card-copy">
+            <div class="card-title"><h3>Mac</h3><span class="mine" data-mine hidden>Your device</span></div>
+            <p class="req">macOS 13 or later, alongside Cisco Secure Client</p>
+            <ul class="caps">
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Connect from the menu bar</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Connects on its own on networks you pick</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Keyboard shortcut through Raycast</li>
+            </ul>
+            <a class="btn card-btn" href="https://github.com/muunkk/connectanytime/releases/latest/download/ConnectAnytime.dmg">Download for Mac</a>
+          </div>
+          <div class="stage stage-mac" aria-hidden="true">
+            <div class="mac">
+              <div class="mb">
+                <div class="mb-left"><svg><use href="#i-apple"/></svg><b>Finder</b><span>File</span><span>Edit</span></div>
+                <div class="mb-right">
+                  <span class="mb-item is-open"><svg class="g"><use href="#i-globe-slash"/></svg>
+                    <span class="mmenu">
+                      <span class="mi is-dis">Disconnected</span>
+                      <span class="msep"></span>
+                      <span class="mi is-hl">Connect</span>
+                      <span class="msep"></span>
+                      <span class="mi">Auto-Connect Networks<svg class="mi-sub" viewBox="0 0 24 24"><path d="M8 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="mi">Set Password…</span>
+                      <span class="mi">Open Cisco Secure Client</span>
+                      <span class="mi"><svg class="mi-check"><use href="#i-check"/></svg>Launch at Login</span>
+                      <span class="mi">Check for Updates…</span>
+                      <span class="msep"></span>
+                      <span class="mi">Quit</span>
+                    </span>
+                  </span>
+                  <span class="mb-item"><span class="bat"><i></i></span></span>
+                  <span class="mb-item"><svg><use href="#i-wifi"/></svg></span>
+                  <span class="mb-item"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M14.6 14.6 20 20" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span>
+                  <span class="mb-item"><svg viewBox="0 0 24 24"><rect x="2.5" y="4.2" width="19" height="6.8" rx="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="6" cy="7.6" r="2.1" fill="currentColor"/><rect x="2.5" y="13" width="19" height="6.8" rx="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="16.4" r="2.1" fill="currentColor"/></svg></span>
+                  <span class="mb-item mb-clock">Thu 9:41</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-os="ios">
+          <div class="card-copy">
+            <div class="card-title"><h3>iPhone</h3><span class="mine" data-mine hidden>Your device</span></div>
+            <p class="req">No Cisco app needed. Beta on TestFlight.</p>
+            <ul class="caps">
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Control Center toggle, Siri and the Action button</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Stays connected through Wi‑Fi and cellular switches</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Rejoins your session without another Duo push</li>
+            </ul>
+            <a class="btn card-btn" href="https://testflight.apple.com/join/UbU8ewh8">Join the TestFlight beta</a>
+          </div>
+          <div class="stage stage-ios" aria-hidden="true">
+            <div class="dev">
+              <div class="iph"><div class="iph-bezel"><div class="iph-screen">
+                <div class="iph-island"></div>
+                <div class="iph-status">
+                  <span class="iph-time">9:41</span>
+                  <span class="iph-icons">
+                    <svg viewBox="0 0 20 14"><g fill="#fff"><rect x="0" y="9" width="3.6" height="5" rx="1"/><rect x="5.4" y="6.2" width="3.6" height="7.8" rx="1"/><rect x="10.8" y="3.2" width="3.6" height="10.8" rx="1"/><rect x="16.2" y="0" width="3.6" height="14" rx="1"/></g></svg>
+                    <svg viewBox="1 4 22 17" style="color:#fff"><use href="#i-wifi"/></svg>
+                    <span class="ibat"><i></i></span>
+                  </span>
+                </div>
+                <div class="cc">
+                  <div class="cc-conn">
+                    <span class="cc-btn"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg></span>
+                    <span class="cc-btn"><svg viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="15" width="3.4" height="6" rx="1"/><rect x="8" y="11.5" width="3.4" height="9.5" rx="1"/><rect x="13" y="8" width="3.4" height="13" rx="1"/><rect x="18" y="4" width="3.4" height="17" rx="1"/></g></svg></span>
+                    <span class="cc-btn on"><svg viewBox="0 1 24 22"><use href="#i-wifi"/></svg></span>
+                    <span class="cc-btn"><svg viewBox="0 0 24 24"><path d="M7 7.2l10 9.6-5 4.7V2.5l5 4.7-10 9.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </div>
+                  <div class="cc-ctl cc-ca"><svg><use href="#i-globe"/></svg></div>
+                  <div class="cc-ctl cc-sq"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="2.5" y="4" width="15" height="10.5" rx="2"/><path d="M8.5 17.5h11a2 2 0 0 0 2-2V9"/></g></svg></div>
+                  <div class="cc-focus"><span><svg viewBox="0 0 24 24"><path fill="currentColor" d="M20 14.6A8.4 8.4 0 0 1 9.4 4a8.4 8.4 0 1 0 10.6 10.6z"/></svg></span><b>Focus</b></div>
+                  <div class="cc-slider" style="--lvl:58%"><i></i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g></svg></div>
+                  <div class="cc-slider" style="--lvl:40%"><i></i><svg viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 9h3.8L12 5v14l-4.7-4H3.5z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                  <div class="cc-ctl"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 2h8v3.6L14.2 9v12.2a.8.8 0 0 1-.8.8h-2.8a.8.8 0 0 1-.8-.8V9L8 5.6z"/></svg></div>
+                  <div class="cc-ctl"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13V8.5M9.5 2.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+                  <div class="cc-ctl"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="1.9"/><g fill="currentColor"><rect x="8" y="5.5" width="8" height="3.5" rx="1"/><circle cx="9" cy="12.5" r="1.1"/><circle cx="12" cy="12.5" r="1.1"/><circle cx="15" cy="12.5" r="1.1"/><circle cx="9" cy="16.5" r="1.1"/><circle cx="12" cy="16.5" r="1.1"/><circle cx="15" cy="16.5" r="1.1"/></g></svg></div>
+                  <div class="cc-ctl"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8.6 4.5h6.8l1.4 2.2h2.4A2.8 2.8 0 0 1 22 9.5v8.7a2.8 2.8 0 0 1-2.8 2.8H4.8A2.8 2.8 0 0 1 2 18.2V9.5a2.8 2.8 0 0 1 2.8-2.8h2.4z"/><circle cx="12" cy="13.6" r="4" fill="#5b4a72"/><circle cx="12" cy="13.6" r="2.6" fill="currentColor"/></svg></div>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-os="android">
+          <div class="card-copy">
+            <div class="card-title"><h3>Android</h3><span class="mine" data-mine hidden>Your device</span></div>
+            <p class="req">Android 10 or later. No Cisco app needed.</p>
+            <ul class="caps">
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Home screen widget and Quick Settings tile</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Share the VPN over hotspot or USB</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg>Rejoins your session without another Duo push</li>
+            </ul>
+            <a class="btn card-btn" href="/download/android">Download the APK</a>
+          </div>
+          <div class="stage stage-and" aria-hidden="true">
+            <div class="dev">
+              <div class="pix"><div class="pix-bezel"><div class="pix-screen">
+                <div class="pix-cam"></div>
+                <div class="pix-status">
+                  <span>9:41</span>
+                  <span class="pix-icons">
+                    <svg viewBox="0 0 24 24"><path fill="#fff" d="M7 14.5a5 5 0 1 1 4.6-7H22v4h-2v3h-3v-3h-5.4A5 5 0 0 1 7 14.5zm0-3a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" transform="translate(0 2)"/></svg>
+                    <svg viewBox="1 4 22 17" style="color:#fff"><use href="#i-wifi"/></svg>
+                    <svg viewBox="0 0 20 20"><path fill="#fff" d="M19 1v18H1z"/></svg>
+                    <span class="pbat"></span>
+                  </span>
+                </div>
+                <div class="pix-glance">Thu, Nov 20</div>
+                <div class="wdg">
+                  <div class="wdg-top">
+                    <div><div class="wdg-title"><i></i>Connected</div><div class="wdg-sub">via Wi‑Fi</div></div>
+                    <span class="wdg-power"><svg viewBox="0 0 24 24"><path d="M12 3v8.5M6.6 6.4a8 8 0 1 0 10.8 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+                  </div>
+                  <div class="wdg-row"><span class="wdg-pill is-out">USB</span><span class="wdg-pill is-on">Hotspot</span></div>
+                </div>
+                <div class="pix-apps">
+                  <span><svg viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 3.5 9.4 3l1.8 4.3-2 1.6a11 11 0 0 0 5.9 5.9l1.6-2 4.3 1.8-.5 2.8A2.4 2.4 0 0 1 18.1 19 15.6 15.6 0 0 1 5 5.9a2.4 2.4 0 0 1 1.6-2.4z"/></svg></span>
+                  <span><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2z" transform="translate(-1 0)"/></svg></span>
+                  <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="m15.8 8.2-2.3 5.3-5.3 2.3 2.3-5.3z"/></svg></span>
+                  <span><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8.6 4.5h6.8l1.4 2.2h2.4A2.8 2.8 0 0 1 22 9.5v8.7a2.8 2.8 0 0 1-2.8 2.8H4.8A2.8 2.8 0 0 1 2 18.2V9.5a2.8 2.8 0 0 1 2.8-2.8h2.4z"/><circle cx="12" cy="13.6" r="3.6" fill="#E6D8FB"/></svg></span>
+                </div>
+                <div class="pix-search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15 15l5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+              </div></div></div>
+            </div>
+          </div>
+        </article>
       </div>
-      <div class="facts">
-        <div><h4>Kept in your Keychain</h4><p>Saved in your device’s secure storage. Never written to a file, a log or the clipboard.</p></div>
-        <div><h4>Sent only to the VPN</h4><p>Your password goes to NYU Shanghai’s VPN server and nowhere else.</p></div>
-        <div><h4>Can’t lock your account</h4><p>Each login step is answered once. A wrong password stops instead of retrying.</p></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="trust-title">
+    <div class="wrap">
+      <div class="trust">
+        <div>
+          <h2 id="trust-title">Your password stays with you.</h2>
+          <p class="sub">All three apps are open source, so you can read exactly what they do.</p>
+        </div>
+        <div class="facts">
+          <div class="fact"><h3>Kept in your Keychain</h3><p>Saved in your device’s secure storage. Never written to a file, a log or the clipboard.</p></div>
+          <div class="fact"><h3>Sent only to the VPN</h3><p>Your password goes to NYU Shanghai’s VPN server and nowhere else.</p></div>
+          <div class="fact"><h3>Can’t lock your account</h3><p>Each login step is answered once. A wrong password stops instead of retrying.</p></div>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span>Free and open source (MIT): <a href="https://github.com/muunkk/connectanytime">Mac</a>, <a href="https://github.com/muunkk/connectanytime-ios">iPhone</a>, <a href="https://github.com/muunkk/connectanytime-android">Android</a>.</span>
-    <span>Not affiliated with Cisco or NYU.</span>
+<footer class="wrap">
+  <div class="foot">
+    <p>Free and open source (MIT): <a href="https://github.com/muunkk/connectanytime">Mac</a>, <a href="https://github.com/muunkk/connectanytime-ios">iPhone</a> and <a href="https://github.com/muunkk/connectanytime-android">Android</a>.</p>
+    <p>Not affiliated with Cisco or NYU.</p>
   </div>
 </footer>
 
