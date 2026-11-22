@@ -140,10 +140,30 @@ function setUpDemo() {
   button.disabled = false;
 }
 
+// Each platform picture plays its own connect moment the first time it scrolls into view.
+// The paused first frame only applies once html.motion is set here, so without JS (or with
+// reduced motion) the pictures show their finished state, and nothing is ever hidden.
+function setUpMotion() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stages = Array.from(document.querySelectorAll('.stage'));
+  const play = (stage) => stage.classList.add('play');
+  document.documentElement.classList.add('motion');
+  if (!('IntersectionObserver' in window)) { stages.forEach(play); return; }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      play(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.5 });
+  stages.forEach((stage) => observer.observe(stage));
+}
+
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('js');
   applyPlatform(detectPlatform(navigator));
   setUpDemo();
+  setUpMotion();
 }
 
 if (typeof module !== 'undefined') module.exports = { detectPlatform };
