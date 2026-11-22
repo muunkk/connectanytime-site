@@ -131,7 +131,7 @@ h1{font-size:clamp(40px,3vw + 19px,57px);line-height:1.03;letter-spacing:-.034em
 .panel-head{display:flex;align-items:center;gap:12px;padding:16px 16px 16px 18px;border-bottom:1px solid var(--line)}
 .panel-icon{width:38px;height:38px;border-radius:8px;flex:none;box-shadow:0 0 0 .5px rgba(0,0,0,.12)}
 .panel-id{min-width:0;flex:1;display:grid;line-height:1.25}
-.panel-name{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.panel-name{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .panel-sub{display:grid;font-size:13px;margin-top:1px;color:var(--muted)}
 .panel-sub > span{grid-area:1/1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .panel-host{font-family:var(--mono);font-size:12px;letter-spacing:-.01em;visibility:hidden}
@@ -556,11 +556,14 @@ html.motion .pw-ring i{animation:spin .9s linear infinite}
   .panel-foot{padding:0 12px 12px}
   .duo-text span{display:none}
   .panel-host{font-size:11px;letter-spacing:-.02em}
-  .get.is-equal .btn-strong{flex:1 1 0;min-width:0;padding:0 8px;gap:7px}
+  .get.is-equal .btn-strong{flex:1 1 auto;padding:0 12px;gap:7px}
   .btn-secondary{height:40px}
   .step{height:48px;font-size:15px}
   .connect{height:46px}
   .status{padding:0 9px 0 8px}
+}
+@media (max-width:360px){
+  .panel-head .panel-icon{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -830,9 +833,9 @@ html.motion .pw-ring i{animation:spin .9s linear infinite}
           </div>
         </div>
         <div class="facts">
-          <div class="fact"><h3>Kept in your Keychain</h3><p>Saved in your device’s secure storage. Never written to a file, a log or the clipboard.</p></div>
-          <div class="fact"><h3>Sent only to the VPN</h3><p>Your password goes to NYU Shanghai’s VPN server and nowhere else.</p></div>
-          <div class="fact"><h3>Can’t lock your account</h3><p>Each login step is answered once. A wrong password stops instead of retrying.</p></div>
+          <div class="fact"><h3>Stored in secure storage</h3><p>Mac and iPhone keep it in the Keychain. Android encrypts it with a key held in Android Keystore. It’s never logged.</p></div>
+          <div class="fact"><h3>Used only to log in</h3><p>On iPhone and Android it goes only to NYU Shanghai’s VPN server, after its certificate is checked. On Mac it goes only to Cisco Secure Client.</p></div>
+          <div class="fact"><h3>No automatic retries</h3><p>Each login prompt is answered once. A wrong password fails instead of being tried again and again.</p></div>
         </div>
       </div>
     </div>

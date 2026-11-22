@@ -14,6 +14,14 @@
     {
       "source": "/download/android",
       "destination": "/api/android"
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "/connectanytime/favicon.png"
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "/connectanytime/apple-touch-icon.png"
     }
   ],
   "headers": [

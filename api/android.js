@@ -22,7 +22,7 @@ export async function GET() {
           status: 302,
           headers: {
             location: apk.browser_download_url,
-            'cache-control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400',
+            'cache-control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=600',
           },
         });
       }

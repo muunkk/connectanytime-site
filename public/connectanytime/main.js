@@ -7,7 +7,7 @@ function detectPlatform(nav) {
   const ua = String(nav.userAgent || '');
   const platform = String(nav.platform || '');
   const hint = nav.userAgentData && typeof nav.userAgentData.platform === 'string' ? nav.userAgentData.platform : '';
-  const touch = Number(nav.maxTouchPoints) > 1;
+  const touch = typeof nav.maxTouchPoints === 'number' && nav.maxTouchPoints > 1;
 
   if (/android/i.test(hint) || /android/i.test(ua)) return 'android';
   if (/iphone|ipod|ipad/i.test(ua) || /iphone|ipod|ipad/i.test(platform) || /^ios$/i.test(hint)) return 'ios';

@@ -12,7 +12,9 @@ under `/connectanytime/` in this project too, and `/` redirects there.
 - `public/connectanytime/` is the static site (one HTML page, one small script, icons). Keep
   every asset path prefixed with `/connectanytime/` so it resolves on boonchan.com.
 - `api/android.js` redirects `/connectanytime/download/android` to the newest APK. Android releases are
-  all pre-releases, which GitHub's `/releases/latest/download/` shortcut skips.
+  all pre-releases, which GitHub's `/releases/latest/download/` shortcut skips. Vercel caches the
+  redirect for up to 20 minutes; after withdrawing an APK, purge the CDN cache (Vercel dashboard ›
+  Project › Settings › Caches) or redeploy.
 - The Mac button uses `/releases/latest/download/ConnectAnytime.dmg` directly.
 - `vercel.json` sets the rewrite and security headers (strict CSP: no inline scripts).
 
