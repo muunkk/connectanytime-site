@@ -1,5 +1,29 @@
 {
-  "rewrites": [{ "source": "/download/android", "destination": "/api/android" }],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/connectanytime",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/connectanytime/download/android",
+      "destination": "/api/android"
+    },
+    {
+      "source": "/download/android",
+      "destination": "/api/android"
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "/connectanytime/favicon.png"
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "/connectanytime/apple-touch-icon.png"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -8,10 +32,22 @@
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; upgrade-insecure-requests"
         },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()" }
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+        }
       ]
     }
   ]
